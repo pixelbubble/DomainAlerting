@@ -19,8 +19,8 @@ pip3 install -r requirements.txt
 ```
 ## Configuration
 Inside the file "launcher.sh", complete:
-- Your keywords (Line 1: #Keywords to complete)
-- Your receiver email (Line 2: #Email to complete)
+- Your keywords (#Keywords to complete)
+- Your receiver (#Email to complete)
 
 Then, create a daily crontab job:
 ```bash
