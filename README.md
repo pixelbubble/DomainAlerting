@@ -9,7 +9,7 @@ DomainAlerting tool allows you to perform two main actions (for educational purp
 
 - ### Send automatic email alert
 You can setup a wordlist and be alerted by email when you have a match (exemple here with "google|amazon").
-![image](https://user-images.githubusercontent.com/75697623/151710269-3def8c7d-8db7-49b1-82fb-124bbb1865de.png)
+![image](https://user-images.githubusercontent.com/75697623/151715898-d8354308-4ee0-44c3-a7e5-5236a1e1f168.png)
 
 ## Prerequisite
 
@@ -19,8 +19,8 @@ pip3 install -r requirements.txt
 ```
 ## Configuration
 Inside the file "launcher.sh", complete:
-- Your keywords (Line 4: #Keywords to complete)
-- Your receiver email (Line 5: #Email to complete)
+- Your keywords (Line 1: #Keywords to complete)
+- Your receiver email (Line 2: #Email to complete)
 
 Then, create a daily crontab job:
 ```bash
