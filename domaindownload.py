@@ -1,44 +1,28 @@
 #!/usr/bin/env python3
 
-# Libraries
-import re
-import time
-import requests
+import base64
 import os
-import shutil
-from urllib.request import urlopen
-import zipfile
+import re
+import requests
+
 from datetime import datetime, timedelta
+from io import BytesIO
+from zipfile import ZipFile
 
-#Path directories
-mainDirectory = os.path.dirname(os.path.realpath(__file__)) + '/'
-otherDirectory = mainDirectory + 'database'
+if 'keyword' not in os.environ:
+    exit('ERROR: Missing \'keyword\' Environment Variable')
 
-#Main function
-def NDDRequest():
-	html = urlopen("https://whoisds.com/newly-registered-domains")
-	text = html.read()
-	plaintext = text.decode('utf8')
-	links = re.findall("href=[\"\'](.*?)[\"\']", plaintext)
-	r = re.compile("https:\/\/whoisds\.com\/\/whois-database\/newly-registered-domains\/.+=\/nrd")
-	newlist = list(filter(r.match, links))
-	url = newlist[1]
-	request = requests.get(url, allow_redirects=True)
-	open("database","wb").write(request.content)
-	todayDate = datetime.today() - timedelta(days=1)
-	yesterdayDate = re.findall("[0-9]{4}-[0-9]{2}-[0-9]{2}", str(todayDate))
-	todayDate = yesterdayDate[0]
-	dailyDirectory = mainDirectory + todayDate
-	try:
-		with zipfile.ZipFile(otherDirectory, 'r') as zip_ref:
-			if not os.path.exists(dailyDirectory):
-   				os.makedirs(dailyDirectory)
-			zip_ref.extractall(dailyDirectory)
-		if os.path.exists(otherDirectory):
-	  		os.remove(otherDirectory)
-		else:
-			pass
-	except:
-		pass
+keywords = re.split(r'[^a-z0-9-]', os.environ['keyword'])
 
-NDDRequest()
+for i in range(4):
+    f = (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d') + '.zip'
+    try:
+        r = requests.get(f'https://www.whoisds.com/whois-database/newly-registered-domains/{base64.b64encode(f.encode()).decode()}/nrd')
+        z = ZipFile(BytesIO(r.content))
+        for l in z.open('domain-names.txt').readlines():
+            if not re.search('({})'.format('|'.join(keywords)), l.decode()):
+                continue
+            print(l.decode().strip())
+        break
+    except:
+        pass
